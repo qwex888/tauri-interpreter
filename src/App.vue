@@ -1,52 +1,39 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+import { ref } from "vue";
+import { gemini } from '@/apis/model'
+
+const question = ref("");
+const answer = ref('');
+
+const onConfirm = async () => {
+    let fullText: string = '';
+    if(!question.value)return
+    const {status, data} = await gemini(question.value)
+    if(status === 200) {
+        data.forEach((i: { candidates: any[]; }) => {
+            i.candidates.forEach((s: { content: any[]; }) => {
+                s.content.forEach((y: { parts: any[]; }) => {
+                    y.parts.forEach((z: { text: any; }) => {
+                        fullText += `${z.text}; `
+                    })
+                })
+            })
+        });
+    }
+    answer.value = fullText
+};
 </script>
 
 <template>
   <div class="container">
-    <h1>Welcome to Tauri!</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
+    <form class="row" @submit.prevent="onConfirm">
+      <textarea id="greet-input" rows="5" v-model="question" placeholder="Enter a text..." />
+      <button type="submit">send</button>
+    </form>
+    <div class="answer">
+        {{ answer }}
     </div>
-
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <p>
-      Recommended IDE setup:
-      <a href="https://code.visualstudio.com/" target="_blank">VS Code</a>
-      +
-      <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-      +
-      <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank"
-        >Tauri</a
-      >
-      +
-      <a href="https://github.com/rust-lang/rust-analyzer" target="_blank"
-        >rust-analyzer</a
-      >
-    </p>
-
-    <Greet />
   </div>
 </template>
 
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-</style>
+<style scoped></style>

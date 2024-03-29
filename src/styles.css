@@ -23,17 +23,6 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
 .row {
   display: flex;
   justify-content: center;
@@ -54,6 +43,7 @@ h1 {
 }
 
 input,
+textarea,
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -80,12 +70,17 @@ button:active {
 }
 
 input,
+textarea,
 button {
   outline: none;
 }
 
 #greet-input {
   margin-right: 5px;
+}
+
+.answer {
+
 }
 
 @media (prefers-color-scheme: dark) {
