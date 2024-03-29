@@ -1,16 +1,54 @@
-# Tauri + Vue 3 + TypeScript
+# interpreter
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 前置条件
 
-## Recommended IDE Setup
+tauri 依赖 rust，需要先安装 rust 环境。
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+[https://www.rust-lang.org/zh-CN/tools/install](https://www.rust-lang.org/zh-CN/tools/install)
 
-## Type Support For `.vue` Imports in TS
+Rust 的编译工具依赖 C 语言的编译工具，这意味着你的电脑上至少已经存在一个 C 语言的编译环境。如果你使用的是 Linux 系统，往往已经具备了 GCC 或 clang。如果你使用的是 macOS，需要安装 Xcode。如果你是用的是 Windows 操作系统，你需要安装 Visual Studio 2013 或以上的环境（需要 C/C++ 支持）以使用 MSVC 或安装 MinGW + GCC 编译环境（Cygwin 还没有测试）。
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+所有选项选择默认。
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+安装完成后通过命令测试是否安装完成。
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+```bash
+rustc -V        # 注意的大写的 V
+# 和
+cargo -V
+```
+
+使用vscode开发的话 安装 `tauri`、`rust` 和 `Native Debug` 插件。
+
+## 启动
+
+### 启动纯 web 项目
+
+```bash
+yarn dev
+```
+
+### 启动纯 tauri 项目
+
+第一次启动项目时，tauri 会根据src-tauri/Cargo.toml 去下载相关依赖（导致第一次启动比较慢），第二次启动会快很多。
+
+```bash
+yarn tauri dev
+```
+
+### 构建应用
+
+默认构建命令：
+
+```bash
+yarn tauri build
+```
+
+但是如果未修改 `src-tauri/tauri.conf.json` 中的 `identifier` 直接 build 会报以下错误。想要正确构建，只需修改为自己特有的标识符即可，如 `com.myapp.dev`。构建完成后，在 `src-tauri/target/release/bundle/{platform}/{app}` 下就可以找到应用程序安装包。
+
+## 生成图标
+
+```bash
+yarn tauri icon
+```
+
