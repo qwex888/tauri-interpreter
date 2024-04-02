@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const gemini = (text: string) => {
+export default (text: string) => {
   return axios.post(
     `${import.meta.env.VITE_GEMINI_BASE_URL}`,
     {

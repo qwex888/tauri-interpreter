@@ -20,6 +20,25 @@ cargo -V
 
 使用vscode开发的话 安装 `tauri`、`rust` 和 `Native Debug` 插件。
 
+## 变量
+
+根目录创建`.env`文件
+
+### gemini
+
+```env
+# google-gemini
+VITE_GEMINI_BASE_URL = 'https://xxx.com/api/google/v1beta/models/gemini-pro:streamGenerateContent'
+```
+
+### baidu
+
+```env
+# baidu
+VITE_BAIDU_APPID = 'xxx'
+VITE_BAIDU_SECRET = 'xxxx'
+```
+
 ## 启动
 
 ### 启动纯 web 项目

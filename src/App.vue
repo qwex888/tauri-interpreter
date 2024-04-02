@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { gemini } from '@/apis/model'
+import gemini from '@/apis/gemini'
 
 const question = ref("");
 const answer = ref('');
@@ -37,3 +37,4 @@ const onConfirm = async () => {
 </template>
 
 <style scoped></style>
+@/apis/gemini
