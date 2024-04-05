@@ -18,6 +18,13 @@ export default defineConfig(async () => ({
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
+    proxy:{
+      '/baidu': {
+        target: 'https://fanyi-api.baidu.com/api',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/baidu/, ''),
+      },
+    }
   },
   resolve: {
     alias: {
