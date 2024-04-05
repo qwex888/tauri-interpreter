@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import gemini from '@/apis/gemini'
+import baidu from '@/apis/baidu';
 
 const question = ref("");
 const answer = ref('');
@@ -25,8 +26,14 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <div class="container">
-    <form class="row" @submit.prevent="onConfirm">
+  <div class="container p-5 flex flex-col justify-center">
+    <div>
+        <select name="apiType" id="apiType">
+            <option value="gemini">gemini</option>
+            <option value="baidu">baidu</option>
+        </select>
+    </div>
+    <form class="" @submit.prevent="onConfirm">
       <textarea id="greet-input" rows="5" v-model="question" placeholder="Enter a text..." />
       <button type="submit">send</button>
     </form>
@@ -37,4 +44,3 @@ const onConfirm = async () => {
 </template>
 
 <style scoped></style>
-@/apis/gemini
