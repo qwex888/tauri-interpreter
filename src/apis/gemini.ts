@@ -10,13 +10,17 @@ export default (text: string) => {
             role: "user",
             parts: [
               {
-                text: "我希望你充当语言检测器。我会用任何语言输入一个句子，你会回答我，我写的句子在你是用哪种语言写的。不要写任何解释或其他文字，只需回复语言名称即可。我的第一句话是：",
+                text: "我希望你充当语言翻译官。我会用任何语言输入一个句子，你会帮我翻译。如果是英语则翻译为中文，如果是中文则翻译为英语,我的第一句话是：",
               },
               {
-                text,
-              },
+                text
+              }
             ],
           },
+          // {
+          //   role: "user",
+          //   parts: [{ text }],
+          // },
         ],
         generationConfig: {
           temperature: 1,
@@ -51,13 +55,12 @@ export default (text: string) => {
     .then((res) => {
       const { status, data } = res;
       let fullText: string = "";
+      console.log(res, 'res');
       if (status === 200) {
         data.forEach((i: { candidates: any[] }) => {
-          i.candidates.forEach((s: { content: any[] }) => {
-            s.content.forEach((y: { parts: any[] }) => {
-              y.parts.forEach((z: { text: any }) => {
-                fullText += `${z.text}; `;
-              });
+          i.candidates.forEach((s: { content: any }) => {
+            s.content.parts.forEach((part: any) => {
+                fullText += `${part.text}`;
             });
           });
         });

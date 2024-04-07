@@ -9,6 +9,9 @@ const encryption = (q: string, salt: string | number) => {
 };
 
 export default (text: string, to = "zh", from = "auto") => {
+  if(/[\u4e00-\u9fa5]+/.test(text)) {
+    to = 'en'
+  }
   const salt = new Date().getTime();
   const q = encodeURI(text);
   return axios
