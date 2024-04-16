@@ -9,6 +9,7 @@ import baidu from "@/apis/baidu";
 import { MoonIcon, SunIcon } from "@heroicons/vue/24/solid";
 import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 
+import { API_OPTIONS } from '@/constants/index';
 import Spinner from "@/components/Spinner.vue";
 
 const { toClipboard } = useClipboard();
@@ -104,8 +105,7 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
           :value="apiVal"
           @change="apiChange($event)"
         >
-          <option value="gemini">gemini</option>
-          <option value="baidu">baidu</option>
+          <option v-for="item in API_OPTIONS" :key="item.value" :value="item.value">item.name</option>
         </select>
       </div>
     </div>

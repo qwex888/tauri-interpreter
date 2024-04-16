@@ -29,6 +29,7 @@ cargo -V
 ```env
 # google-gemini
 VITE_GEMINI_BASE_URL = 'https://xxx.com/api/google/v1beta/models/gemini-pro:streamGenerateContent'
+VITE_GEMINI_API_KEY = 'xxx'
 ```
 
 ### baidu
