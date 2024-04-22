@@ -1,11 +1,17 @@
 import axios from "axios";
+import { useAppStore } from "@/stores/app";
 
 export default (text: string) => {
+  const appStore = useAppStore();
+  const baseUrl = appStore.getBaseUrl();
+  const apiUrl =
+    (baseUrl
+      ? `${baseUrl}/api/${appStore.modelType}`
+      : import.meta.env.VITE_GEMINI_BASE_URL) +
+    "/v1beta/models/gemini-pro:generateContent";
   return axios
     .post(
-      `${import.meta.env.VITE_GEMINI_BASE_URL}?key=${
-        import.meta.env.VITE_GEMINI_API_KEY
-      }`,
+      `${apiUrl}?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
       {
         contents: [
           {
@@ -42,6 +48,7 @@ export default (text: string) => {
       {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer nk-${appStore.appSetting.nextWebPassword}`
         },
       }
     )

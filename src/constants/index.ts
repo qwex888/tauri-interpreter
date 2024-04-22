@@ -5,7 +5,7 @@ export const API_OPTIONS = [
     },
     {
         name: 'gemini',
-        value: 'gemini'
+        value: 'google'
     },
     {
         name: 'openAi',
