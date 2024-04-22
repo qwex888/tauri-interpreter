@@ -13,7 +13,6 @@ import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 
 import {
   API_OPTIONS,
-  BAIDU_OPTION,
   GEMINI_OPTION,
   OPENAI_OPTION,
 } from "@/constants/index";
@@ -43,11 +42,11 @@ const onConfirm = async () => {
   if (!flag) return;
   isLoading.value = true;
   const requestFn =
-    modelType.value === BAIDU_OPTION
-      ? baidu
+    modelType.value === OPENAI_OPTION
+      ? openai
       : modelType.value === GEMINI_OPTION
       ? gemini
-      : openai;
+      : baidu;
   const text: string = await requestFn(question.value);
   answer.value = text;
   isLoading.value = false;
