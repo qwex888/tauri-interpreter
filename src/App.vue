@@ -6,11 +6,17 @@ import { storeToRefs } from "pinia";
 
 import gemini from "@/apis/gemini";
 import baidu from "@/apis/baidu";
+import openai from "@/apis/openai";
 
 import { MoonIcon, SunIcon, Cog6ToothIcon } from "@heroicons/vue/24/solid";
 import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 
-import { API_OPTIONS } from "@/constants/index";
+import {
+  API_OPTIONS,
+  BAIDU_OPTION,
+  GEMINI_OPTION,
+  OPENAI_OPTION,
+} from "@/constants/index";
 import { useAppStore } from "@/stores/app";
 
 const { message } = createDiscreteApi(["message"]);
@@ -32,8 +38,16 @@ const isLoading = ref(false);
 
 const onConfirm = async () => {
   if (!question.value) return;
+  // 检查该模型的key是否存在
+  const flag = appStore.checkApi();
+  if (!flag) return;
   isLoading.value = true;
-  const requestFn = modelType.value === "gemini" ? gemini : baidu;
+  const requestFn =
+    modelType.value === BAIDU_OPTION
+      ? baidu
+      : modelType.value === GEMINI_OPTION
+      ? gemini
+      : openai;
   const text: string = await requestFn(question.value);
   answer.value = text;
   isLoading.value = false;

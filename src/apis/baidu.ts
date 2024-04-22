@@ -4,14 +4,7 @@ import { useAppStore } from "@/stores/app";
 
 const getBaiduKey = () => {
   const appStore = useAppStore();
-  return {
-    appId: appStore.appSetting.isUseCustomBaidu
-      ? appStore.appSetting.baiduAppId
-      : import.meta.env.VITE_BAIDU_APPID,
-    secret: appStore.appSetting.isUseCustomBaidu
-      ? appStore.appSetting.baiiduSecret
-      : import.meta.env.VITE_BAIDU_SECRET,
-  };
+  return appStore.getBaiduKey()
 };
 
 const encryption = (q: string, salt: string | number) => {
