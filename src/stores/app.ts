@@ -23,16 +23,14 @@ export const useAppStore = defineStore("app", {
     };
   },
   getters: {
-    getBaseUrl(state) {
-      return state.appSetting.isUseNextWebApi
-        ? state.appSetting.nextWebUrl
-        : "";
-    },
-    getModel(state) {
-      return state.modelType;
-    },
+
   },
   actions: {
+    getBaseUrl() {
+      return this.appSetting.isUseNextWebApi
+        ? this.appSetting.nextWebUrl
+        : "";
+    },
     getBaiduKey() {
       let appId = import.meta.env.VITE_BAIDU_APPID;
       let secret = import.meta.env.VITE_BAIDU_SECRET;
