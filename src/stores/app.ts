@@ -12,14 +12,18 @@ export const useAppStore = defineStore("app", {
         isUseNextWebApi: false,
         nextWebUrl: "",
         nextWebPassword: "",
-        openAiKey: "",
-        geminiKey: "",
         isUseCustomBaidu: false,
         baiduAppId: "",
         baiiduSecret: "",
+        isUseCustomGeminiApi: false,
+        geminiKey: "",
+        isUseCustomOpenAiApi: false,
+        openAiKey: "",
+
       },
       theme: "",
       modelType: "baidu",
+      showSetting: false
     };
   },
   getters: {
@@ -50,7 +54,7 @@ export const useAppStore = defineStore("app", {
     getGeminiKey() {
       let key = import.meta.env.VITE_GEMINI_API_KEY;
       if (
-        this.appSetting.isUseNextWebApi &&
+        this.appSetting.isUseCustomGeminiApi &&
         this.appSetting.geminiKey
       ) {
         key = this.appSetting.geminiKey;
@@ -60,7 +64,7 @@ export const useAppStore = defineStore("app", {
     getOpenAiKey() {
       let key = import.meta.env.VITE_OPENAI_API_KEY;
       if (
-        this.appSetting.isUseNextWebApi &&
+        this.appSetting.isUseCustomOpenAiApi &&
         this.appSetting.openAiKey
       ) {
         key = this.appSetting.openAiKey;
@@ -74,9 +78,9 @@ export const useAppStore = defineStore("app", {
           const { appId, secret } = this.getBaiduKey();
           return appId && secret;
         case GEMINI_OPTION:
-          return this.getGeminiKey();
+          return !!this.getGeminiKey();
         case OPENAI_OPTION:
-          return this.getOpenAiKey();
+          return !!this.getOpenAiKey();
       }
     },
     initApp() {

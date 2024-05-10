@@ -1,58 +1,43 @@
 import axios from "axios";
+import { useAppStore } from "@/stores/app";
 
 export default (text: string) => {
+  const appStore = useAppStore();
+  const baseUrl = appStore.getBaseUrl();
+  let apiUrl = "https://api.openai.com/v1/chat/completions";
+  const headers: any = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+  };
+  if (baseUrl) {
+    apiUrl = `${baseUrl}/api/openai/v1/chat/completions`;
+  }
   return axios
     .post(
-      `${import.meta.env.VITE_GEMINI_BASE_URL}?key=${
-        import.meta.env.VITE_GEMINI_API_KEY
-      }`,
+      apiUrl,
       {
-        contents: [
+        model: "gpt-3.5-turbo",
+        messages: [
           {
-            role: "user",
-            parts: [
-              {
-                text: "我希望你充当语言翻译官。我会用任何语言输入一个句子，你会帮我翻译。如果是除中文以外的语言都翻译为中文，如果是中文且不指定翻译语种则一律翻译为英语,我的第一句话是：",
-              },
-              {
-                text,
-              },
-            ],
-          },
-        ],
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_ONLY_HIGH",
+            role: "system",
+            content: "你是一个语言翻译助手，拥有多语言识别和翻译能力。你的任务是根据用户输入的文本和目标语言进行翻译，确保翻译结果自然通顺，结构严谨。如果没有指定则把英语翻译为中文，中文翻译为英文。你需要支持多种语言的翻译。请直接输出目标语言的翻译内容。对话风格应该友好、专业，输出格式应当清晰易懂，避免歧义。我的第一句话是："
           },
           {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_ONLY_HIGH",
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_ONLY_HIGH",
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_ONLY_HIGH",
-          },
+            role: 'user',
+            content: text
+          }
         ],
       },
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
       }
     )
     .then((res) => {
       const { status, data } = res;
       let fullText: string = "";
       if (status === 200) {
-        data.candidates.forEach((i: { content: any }) => {
-          i.content.parts.forEach((part: any) => {
-            fullText += `${part.text}`;
-          });
+        data.choices.forEach((i: { message: any }) => {
+          fullText += i.message.content
         });
       }
       return fullText;

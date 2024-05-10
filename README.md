@@ -28,7 +28,6 @@ cargo -V
 
 ```env
 # google-gemini
-VITE_GEMINI_BASE_URL = 'https://xxx.com/api/google/v1beta/models/gemini-pro:streamGenerateContent'
 VITE_GEMINI_API_KEY = 'xxx'
 ```
 
@@ -38,6 +37,13 @@ VITE_GEMINI_API_KEY = 'xxx'
 # baidu
 VITE_BAIDU_APPID = 'xxx'
 VITE_BAIDU_SECRET = 'xxxx'
+```
+
+### openAi
+
+```env
+# openai
+VITE_OPENAI_API_KEY = 'xxx'
 ```
 
 ## 启动
