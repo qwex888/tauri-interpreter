@@ -39,11 +39,32 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn' # Set this to npm, yarn or pnpm.
-
+       # 获取 yarn 缓存路径
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+        # 使用 yarn 缓存
+      - name: Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: Install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: yarn install # Change this to npm, yarn or pnpm.
-
+      # 安装依赖执行构建，以及推送 github release
+      - name: Install app dependencies and build it
+        run: yarn && yarn build
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        with:
+          releaseId: ${{ needs.create-release.outputs.RELEASE_UPLOAD_ID }}
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
@@ -57,3 +78,21 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
+  # 生成静态资源并将其推送到 github pages
+  updater:
+    runs-on: ubuntu-latest
+    needs: [release]
+ 
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn
+      - run: yarn updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+      - name: Deploy install.json
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./updater
+          force_orphan: true
