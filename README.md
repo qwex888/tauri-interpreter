@@ -77,4 +77,3 @@ yarn tauri build
 ```bash
 yarn tauri icon
 ```
-
