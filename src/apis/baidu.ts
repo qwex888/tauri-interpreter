@@ -1,5 +1,7 @@
 import axios from "axios";
+import http from './http';
 import md5 from "@/utils/md5";
+import { handleIsTauri } from '@/utils/index';
 import { useAppStore } from "@/stores/app";
 
 const getBaiduKey = () => {
@@ -20,22 +22,28 @@ export default (text: string, to = "zh", from = "auto") => {
   const salt = new Date().getTime();
   const q = encodeURI(text);
   const { appId } = getBaiduKey();
-  return axios
-    .get(
+  let response = handleIsTauri() ? http(`https://fanyi-api.baidu.com/api/trans/vip/translate?q=${q}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${encryption(
+      text,
+      salt
+    )}`, {
+    method: 'get',
+      // responseType: ResponseType.Text,
+    }) : 
+    axios.get(
       `/baidu/trans/vip/translate?q=${q}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${encryption(
         text,
         salt
       )}`
-    )
-    .then((res) => {
-      const {
-        status,
-        statusText,
-        data: { trans_result },
-      } = res;
-      if (status === 200 && statusText === "OK") {
-        return trans_result[0].dst;
-      }
-      return "";
-    });
+    );
+  return response.then((res) => {
+    const {
+      status,
+      statusText,
+      data: { trans_result },
+    } = res;
+    if (status === 200 && statusText === "OK") {
+      return trans_result[0].dst;
+    }
+    return "";
+  });
 };
