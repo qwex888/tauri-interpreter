@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "description": "Your quick translation assistant",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

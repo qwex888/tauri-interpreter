@@ -62,6 +62,12 @@ yarn dev
 yarn tauri dev
 ```
 
+### 生产环境调试
+
+```bash
+yarn tauri build -- --debug
+```
+
 ### 构建应用
 
 默认构建命令：
