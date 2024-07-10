@@ -26,9 +26,8 @@ export default (text: string, to = "zh", from = "auto") => {
       text,
       salt
     )}`, {
-    method: 'get',
-      // responseType: ResponseType.Text,
-    }) : 
+    method: 'get'
+    }) :
     axios.get(
       `/baidu/trans/vip/translate?q=${q}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${encryption(
         text,
@@ -38,10 +37,9 @@ export default (text: string, to = "zh", from = "auto") => {
   return response.then((res) => {
     const {
       status,
-      statusText,
       data: { trans_result },
     } = res;
-    if (status === 200 && statusText === "OK") {
+    if (status === 200) {
       return trans_result[0].dst;
     }
     return "";

@@ -41,11 +41,11 @@ const http = (url: string, options: any = {}) => {
  
     options = { ...commonOptions, ...options }
     return fetch(buildFullPath(baseURL, url), options)
-        .then(({ status, data }) => {
-            if (status >= 200 && status < 400) {
-                return { data }
+        .then((res) => {
+            if (res.status >= 200 && res.status < 400) {
+                return res
             }
-            return Promise.reject({ status, data })
+            return Promise.reject(res)
         })
         .catch((err) => {
             console.error(err)
