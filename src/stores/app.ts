@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
+import { invoke } from "@tauri-apps/api/tauri";
+import { show } from '@tauri-apps/api/app';
+
 import {
   BAIDU_OPTION,
   GEMINI_OPTION,
@@ -19,7 +23,8 @@ export const useAppStore = defineStore("app", {
         geminiKey: "",
         isUseCustomOpenAiApi: false,
         openAiKey: "",
-
+        // globalShowWindow: 'alt+f'
+        globalShowWindow: 'CmdOrControl+f'
       },
       theme: "",
       modelType: "baidu",
@@ -112,6 +117,22 @@ export const useAppStore = defineStore("app", {
         document.documentElement.classList.remove("dark");
       }
     },
+    // 初始化全局快捷键注册
+    async initGlobalShortcut() {
+      const registered = await isRegistered(this.appSetting.globalShowWindow)
+      console.log(registered, '全局快捷键WEi');
+      const res = await invoke("greet", { name: '123' });
+      console.log(res, 'res');
+      if (!registered) {
+        console.log('快捷键注册');
+        await register(this.appSetting.globalShowWindow, async () => {
+          // 触发快捷键
+          const res = await invoke("greet", { name: '123' });
+          console.log('快捷键触发', this.appSetting.globalShowWindow, res);
+        });
+      }
+    },
+
   },
   persist: {
     storage: localStorage,

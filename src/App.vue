@@ -24,6 +24,7 @@ const answer = ref("");
 
 onMounted(() => {
   appStore.initTheme();
+  appStore.initGlobalShortcut();
 });
 
 const apiChange = (e: any) => {
