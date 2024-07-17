@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
 import { invoke } from "@tauri-apps/api/tauri";
-import { show } from '@tauri-apps/api/app';
-
+import { check } from "@tauri-apps/plugin-updater";
+import { relaunch } from "@tauri-apps/plugin-process";
 import {
   BAIDU_OPTION,
   GEMINI_OPTION,
@@ -24,11 +24,12 @@ export const useAppStore = defineStore("app", {
         isUseCustomOpenAiApi: false,
         openAiKey: "",
         // globalShowWindow: 'alt+f'
-        globalShowWindow: 'CmdOrControl+f'
+        globalShowWindow: 'CmdOrControl+shift+f'
       },
       theme: "",
       modelType: "baidu",
-      showSetting: false
+      showSetting: false,
+      updater: false
     };
   },
   getters: {
@@ -120,19 +121,37 @@ export const useAppStore = defineStore("app", {
     // 初始化全局快捷键注册
     async initGlobalShortcut() {
       const registered = await isRegistered(this.appSetting.globalShowWindow)
-      console.log(registered, '全局快捷键WEi');
-      const res = await invoke("greet", { name: '123' });
-      console.log(res, 'res');
+      console.log(`全局是否已快捷键${registered}`);
+      // const res = await invoke("greet", { name: '123' });
+      // console.log(res, 'res');
       if (!registered) {
-        console.log('快捷键注册');
         await register(this.appSetting.globalShowWindow, async () => {
           // 触发快捷键
-          const res = await invoke("greet", { name: '123' });
-          console.log('快捷键触发', this.appSetting.globalShowWindow, res);
+          // const res = await invoke("greet", { name: '123' });
+          console.log('快捷键触发', this.appSetting.globalShowWindow);
         });
       }
     },
+    async checkUpdate() {
+      const update = await check();
+      this.updater = !!update?.available
+      // if (update?.available) {
+      //   await update.downloadAndInstall();
+      //   await relaunch();
+      // }
 
+      // await updater.downloadAndInstall((p) => {
+      //   if (p.event === "Progress") {
+      //     setProgress(p.data.chunkLength);
+      //   }
+      // });
+
+      // setUpdating(false);
+      // const res = await ask(t`更新下载完成，是否立即重启应用？`, {
+      //   title: t`提示`,
+      //   kind: "info",
+      // });
+    }
   },
   persist: {
     storage: localStorage,
