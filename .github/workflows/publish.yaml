@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 我这里只需要两个平台，完整的可以参考官方的workflow, ubuntu-20.04
-        platform: ['windows-latest', 'macos-latest']
+        # 我这里只需要两个平台，完整的可以参考官方的workflow, macos-latest，ubuntu-20.04
+        platform: ['windows-latest' ]
 
     runs-on: ${{ matrix.platform }}
     steps:
