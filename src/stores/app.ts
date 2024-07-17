@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
-import { invoke } from "@tauri-apps/api/tauri";
+// import { invoke } from "@tauri-apps/api/tauri";
 import { check } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
+// import { relaunch } from "@tauri-apps/plugin-process";
 import {
   BAIDU_OPTION,
   GEMINI_OPTION,

@@ -3,6 +3,7 @@ use tauri::{Manager, Wry, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTra
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #[cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+#[warn(unused_attributes)]
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet() -> () {
