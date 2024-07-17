@@ -1,12 +1,12 @@
 import { context, getOctokit } from '@actions/github';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdirSync } from 'node:fs/promises';
 
 const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
 const tagName = 'updater';
 const updateRelease = async () => {
   let release = null;
-  console.log('------>actions:context: ', context);
+  // console.log('------>actions:context: ', context);
   try {
     // 获取updater tag的release
     const { data } = await octokit.rest.repos.getReleaseByTag({
@@ -42,6 +42,11 @@ const updateRelease = async () => {
       release = createdRelease.data;
     }
   }
+  console.log('------>release: ', release);
+  const files = readdirSync('./', { withFileTypes: true });
+  const roots = readdirSync('../', { withFileTypes: true });
+  console.log('------>:read:files', files);
+  console.log('------>:read:roots', roots);
   // 上传新的文件
   const file = await readFile('latest.json', { encoding: 'utf-8' });
   const data = JSON.parse(file);
