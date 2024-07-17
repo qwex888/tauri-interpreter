@@ -1,5 +1,5 @@
 import { context, getOctokit } from '@actions/github';
-import { readFile, readdirSync } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 
 const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
@@ -43,8 +43,8 @@ const updateRelease = async () => {
     }
   }
   console.log('------>release: ', release);
-  const files = readdirSync('./', { withFileTypes: true });
-  const roots = readdirSync('../', { withFileTypes: true });
+  const files = await readdir('./', { withFileTypes: true });
+  const roots = await readdir('../', { withFileTypes: true });
   console.log('------>:read:files', files);
   console.log('------>:read:roots', roots);
   // 上传新的文件
