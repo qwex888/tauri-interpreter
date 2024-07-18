@@ -1,9 +1,31 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import type { InputInst } from 'naive-ui'
+import { createDiscreteApi } from 'naive-ui'
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/app";
+import { unregister } from '@tauri-apps/api/globalShortcut';
 
+const { message } = createDiscreteApi(["message"]);
 const appStore = useAppStore();
 const { showSetting, appSetting } = storeToRefs(appStore);
+const shortcutRef = ref<InputInst | null>(null)
+
+const shortcutBak = ref('');
+const shortcutBlur = async () => {
+  appStore.setShortcutUpdateStatus(false);
+  //失焦后判断快捷键是否已改变
+  if (shortcutBak.value !== appSetting.value.globalShowWindow) {
+    await unregister(shortcutBak.value);
+    appStore.initGlobalShortcut();
+    message.success('设置成功');
+  }
+  // appSetting.value.globalShowWindow = shortcutBak.value;
+}
+const shortcutFocus = () => {
+  shortcutBak.value = appSetting.value.globalShowWindow;
+  appStore.setShortcutUpdateStatus(true);
+}
 </script>
 <template>
   <n-modal
@@ -12,8 +34,14 @@ const { showSetting, appSetting } = storeToRefs(appStore);
     title="设置"
     style="height: 100vh"
   >
-    <n-form label-placement="left" size="small" ref="formRef">
+    <div class="setting">
+      <n-form label-placement="left" size="small" ref="formRef">
       <n-space vertical>
+        <n-card title="快捷键设置">
+          <n-form-item label="全局显示/隐藏窗口">
+            <n-input ref="shortcutRef" v-model:value="appSetting.globalShowWindow" round readonly placeholder="请输入快捷键" @blur="shortcutBlur" @focus="shortcutFocus" />
+          </n-form-item>
+        </n-card>
         <n-card title="chatGPT-next-web Api">
           <n-form-item label="是否启用api">
             <n-switch v-model:value="appSetting.isUseNextWebApi" />
@@ -126,7 +154,16 @@ const { showSetting, appSetting } = storeToRefs(appStore);
         </n-card>
       </n-space>
     </n-form>
+    </div>
   </n-modal>
 </template>
 
-<style lang="scss" scoped></style>
+<style>
+.n-card .n-card__content {
+  overflow: hidden;
+}
+.setting {
+  height: 100%;
+  overflow: auto;
+}
+</style>

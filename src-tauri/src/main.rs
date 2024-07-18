@@ -1,16 +1,21 @@
-use tauri::{Manager, Wry, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, CustomMenuItem, AppHandle};
+use tauri::{Manager, Window, Wry, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, CustomMenuItem, AppHandle};
 
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #[cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[warn(unused_attributes)]
+// #[warn(unused_attributes)]
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet() -> () {
-    // let window = app.get_window("main").unwrap();
-    // window.show().unwrap();
-    // window.set_focus().unwrap();
-    // "ok".into();
+fn shortcut(window: Window) -> String {
+    let window = window.get_window("main").unwrap();
+    if window.is_visible().unwrap() {
+      window.hide().unwrap();
+      "hide".into()
+    } else {
+      window.show().unwrap();
+      window.set_focus().unwrap();
+      "show".into()
+    }
 }
 // 创建系统托盘
 pub fn create_system_tray() -> SystemTray {
@@ -82,7 +87,7 @@ fn main() {
     tauri::Builder::default()
         .system_tray(create_system_tray())
     	.on_system_tray_event(handle_system_tray_event)
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![shortcut])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

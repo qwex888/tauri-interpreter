@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import useClipboard from "vue-clipboard3";
 import { darkTheme, createDiscreteApi } from "naive-ui";
 import { storeToRefs } from "pinia";
@@ -18,14 +18,30 @@ import { useAppStore } from "@/stores/app";
 const { message } = createDiscreteApi(["message"]);
 const { toClipboard } = useClipboard();
 const appStore = useAppStore();
-const { theme, modelType, showSetting } = storeToRefs(appStore);
+const { theme, modelType, showSetting, shortcutUpdating } = storeToRefs(appStore);
 const question = ref("");
 const answer = ref("");
 
 onMounted(() => {
   appStore.initTheme();
   appStore.initGlobalShortcut();
+  // 添加键盘事件监听
+  document.addEventListener('keydown', handleKeydown)
 });
+onBeforeUnmount(() => {
+    document.removeEventListener('keydown', handleKeydown)
+  })
+
+const handleKeydown = (event: any) => {
+    const { key, code, keyCode, altKey, ctrlKey, metaKey, shiftKey } = event;
+    if (shortcutUpdating.value && (altKey || ctrlKey || metaKey || shiftKey) && key !== 'Meta' && key !== 'Control' && key !== 'Alt' && key !== 'Shift') {
+      const keyName = /^[a-zA-Z0-9]+$/i.test(key) ? key : code.replace('Key', '');
+      appStore.setGlobalShortcut(`${ctrlKey ? 'Ctrl+' : ''}${shiftKey ? 'Shift+' : ''}${altKey ? 'Alt+' : ''}${metaKey ? 'CommandOrControl+' : ''}${keyName.toLocaleUpperCase()}`);
+    }
+    if(altKey && (keyCode === 188 || keyCode === 229)) {
+      showSetting.value = true;
+    }
+  }
 
 const apiChange = (e: any) => {
   appStore.setModel(e?.target?.value);

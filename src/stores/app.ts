@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
-// import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/tauri";
 import { check } from "@tauri-apps/plugin-updater";
 // import { relaunch } from "@tauri-apps/plugin-process";
 import {
@@ -23,13 +23,13 @@ export const useAppStore = defineStore("app", {
         geminiKey: "",
         isUseCustomOpenAiApi: false,
         openAiKey: "",
-        // globalShowWindow: 'alt+f'
-        globalShowWindow: 'CmdOrControl+shift+f'
+        globalShowWindow: 'alt+shift+f'
       },
       theme: "",
       modelType: "baidu",
       showSetting: false,
-      updater: false
+      updater: false,
+      shortcutUpdating: false
     };
   },
   getters: {
@@ -118,17 +118,22 @@ export const useAppStore = defineStore("app", {
         document.documentElement.classList.remove("dark");
       }
     },
+    setShortcutUpdateStatus(status: boolean) {
+      this.shortcutUpdating = status;
+    },
+    setGlobalShortcut(key: string) {
+      this.appSetting.globalShowWindow = key || this.appSetting.globalShowWindow;
+    },
     // 初始化全局快捷键注册
     async initGlobalShortcut() {
       const registered = await isRegistered(this.appSetting.globalShowWindow)
-      console.log(`全局是否已快捷键${registered}`);
-      // const res = await invoke("greet", { name: '123' });
-      // console.log(res, 'res');
+      console.log(`是否已全局注册快捷键[${this.appSetting.globalShowWindow}]: ${registered}`);
       if (!registered) {
         await register(this.appSetting.globalShowWindow, async () => {
+          if (this.shortcutUpdating) return;
           // 触发快捷键
-          // const res = await invoke("greet", { name: '123' });
-          console.log('快捷键触发', this.appSetting.globalShowWindow);
+          const res = await invoke("shortcut");
+          // console.log('快捷键触发', this.appSetting.globalShowWindow, res);
         });
       }
     },
