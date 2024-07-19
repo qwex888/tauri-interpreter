@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "updater": "node scripts/updater.mjs",
-    "publish": "node scripts/publish.mjs",
+    "app:publish": "node scripts/publish.mjs",
     "changelog": "conventional-changelog -p custom-config -i CHANGELOG.md -s -r 0  -n ./changelog-option.cjs"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "conventional-changelog": "^6.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "conventional-changelog-custom-config": "^0.3.1",
+    "fs-extra": "^11.2.0",
     "husky": "^9.1.0",
     "naive-ui": "^2.38.1",
     "node-fetch": "^3.3.2",
