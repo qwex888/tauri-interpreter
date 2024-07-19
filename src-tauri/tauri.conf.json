@@ -32,7 +32,8 @@
       "dialog": false,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI3OTQyQTcyODY3REY5MDYKUldRRytYMkdjaXFVdDNteEF6TDNhY3NBSXcwRGtNclFNcU9Qb0MyakZwbnJwbVpzcFdOL0RlYkIK",
       "endpoints": [
-        "https://github.com/qwex888/tauri-interpreter/releases/download/v0.0.4/update.json"
+        "https://github.com/qwex888/tauri-interpreter/releases/download/updater/update.json",
+        "https://github.yocat.eu.org/https://github.com/qwex888/tauri-interpreter/releases/download/updater/update-proxy.json"
       ],
       "windows": {
         "installMode": "passive"
