@@ -1,30 +1,52 @@
-import { readFile, copyFile, writeFile, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import fs from "fs-extra";
+import { createRequire } from "module";
+import { execSync } from "child_process";
+import { resolveChangeLog } from "./updatelog.mjs";
 
-// const artifactPaths = JSON.parse(process.env.artifactPaths);
-// console.log("artifactPaths", artifactPaths);
-// console.log("first", artifactPaths[0]);
-const targetDir = join(import.meta.dirname, "../", "publish");
+const require = createRequire(import.meta.url);
 
-const publish = async () => {
-  await mkdir(targetDir, { recursive: true });
+// 自动更新版本，添加对应 tag 并推送至仓库
+async function resolvePublish() {
+  const flag = process.argv[2] ?? "patch";
+  const packageJson = require("../package.json");
+  const tauriJson = require("../src-tauri/tauri.conf.json");
 
-  // for await (const artifactPath of artifactPaths) {
-  //   const fileName = artifactPath.split("/").pop();
-  //   const path = join(targetDir, fileName);
-  //   await copyFile(artifactPath, path);
-  //   console.log(`Coping ${artifactPath} ======> ${path}`);
-  // }
+  let [a, b, c] = packageJson.version.split(".").map(Number);
+  if (flag === "major") {
+    a += 1;
+    b = 0;
+    c = 0;
+  } else if (flag === "minor") {
+    b += 1;
+    c = 0;
+  } else if (flag === "patch") {
+    c += 1;
+  } else throw new Error(`invalid flag "${flag}"`);
 
-  const file = await readFile("latest.json", { encoding: "utf-8" });
-  const data = JSON.parse(file);
-  if (data.platforms["darwin-x86_64"]) {
-    data.platforms["darwin-aarch64"] = data.platforms["darwin-x86_64"];
-  }
-  await writeFile(
-    join(targetDir, "latest.json"),
-    JSON.stringify(data, null, 2)
+  const nextVersion = `${a}.${b}.${c}`;
+  packageJson.version = nextVersion;
+  tauriJson.package.version = nextVersion;
+
+  // 发布更新前先写更新日志
+  const nextTag = `v${nextVersion}`;
+  await resolveChangeLog(nextTag);
+
+  await fs.writeFile(
+    "./package.json",
+    JSON.stringify(packageJson, undefined, 2)
   );
-};
+  await fs.writeFile(
+    "./src-tauri/tauri.conf.json",
+    JSON.stringify(tauriJson, undefined, 2)
+  );
 
-publish();
+  execSync("git add ./package.json");
+  execSync("git add ./src-tauri/tauri.conf.json");
+  execSync(`git commit -m "release v${nextVersion}"`);
+  execSync(`git tag -a v${nextVersion} -m "v${nextVersion}"`);
+  execSync(`git push`);
+  execSync(`git push origin v${nextVersion}`);
+  console.log(`Publish Successfully...`);
+}
+
+resolvePublish();

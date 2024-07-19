@@ -51,7 +51,7 @@ VITE_OPENAI_API_KEY = 'xxx'
 ### 启动纯 web 项目
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 ### 启动纯 tauri 项目
@@ -59,13 +59,13 @@ yarn dev
 第一次启动项目时，tauri 会根据src-tauri/Cargo.toml 去下载相关依赖（导致第一次启动比较慢），第二次启动会快很多。
 
 ```bash
-yarn tauri dev
+pnpm tauri dev
 ```
 
 ### 生产环境调试
 
 ```bash
-yarn tauri build -- --debug
+pnpm tauri build -- --debug
 ```
 
 ### 构建应用
@@ -73,7 +73,7 @@ yarn tauri build -- --debug
 默认构建命令：
 
 ```bash
-yarn tauri build
+pnpm tauri build
 ```
 
 但是如果未修改 `src-tauri/tauri.conf.json` 中的 `identifier` 直接 build 会报以下错误。想要正确构建，只需修改为自己特有的标识符即可，如 `com.myapp.dev`。构建完成后，在 `src-tauri/target/release/bundle/{platform}/{app}` 下就可以找到应用程序安装包。
@@ -81,5 +81,36 @@ yarn tauri build
 ## 生成图标
 
 ```bash
-yarn tauri icon
+pnpm tauri icon
+```
+
+## 代码提交格式
+
+提交格式
+
+```bash
+git commit -m <type>(scope?): <subject>
+```
+
+示例：
+
+```bash
+git commit -m 'chore: run tests on travis ci'
+
+git commit -m 'fix(server): send cors headers'
+
+git commit -m 'feat(blog): add comment section'
+```
+
+> 注意，英文冒号 + 空格
+
+## 发布应用
+
+* 版本type:
+  * 修订：patch (默认)
+  * 次版本： minor
+  * 主版本: major
+
+```bash
+pnpm publish [版本type]
 ```
