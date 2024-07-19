@@ -132,7 +132,7 @@ export const useAppStore = defineStore("app", {
         await register(this.appSetting.globalShowWindow, async () => {
           if (this.shortcutUpdating) return;
           // 触发快捷键
-          const res = await invoke("shortcut");
+          await invoke("shortcut");
           // console.log('快捷键触发', this.appSetting.globalShowWindow, res);
         });
       }

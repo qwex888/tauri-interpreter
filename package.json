@@ -6,6 +6,7 @@
   "description": "Your quick translation assistant",
   "scripts": {
     "dev": "vite",
+    "tsc": "vue-tsc --noEmit",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
