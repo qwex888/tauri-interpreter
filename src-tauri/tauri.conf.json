@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "interpreter",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "tauri": {
     "systemTray": {
@@ -74,7 +74,9 @@
         "icons/icon.ico"
       ],
       "deb": {
-        "depends": ["openssl"]
+        "depends": [
+          "openssl"
+        ]
       },
       "macOS": {
         "frameworks": [],
