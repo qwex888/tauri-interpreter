@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-20.04'
@@ -37,9 +37,10 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Sync node version and insatll nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          # node-version: 16
+          node-version: 'lts/*'
 
       # 使用 pnpm 作为包管理器
       - name: Install pnpm
