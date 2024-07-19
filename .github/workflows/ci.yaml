@@ -64,7 +64,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Install app dependencies and build it (macos only)
+        if: matrix.platform == 'macos'
+        run: pnpm i && pnpm build --target universal-apple-darwin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
       - name: Install app dependencies and build it
+        if: matrix.platform != 'macos'
         run: pnpm i && pnpm build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "interpreter",
-    "version": "0.1.1"
+    "version": "0.1.0"
   },
   "tauri": {
     "systemTray": {
@@ -15,7 +15,6 @@
       "iconAsTemplate": true
     },
     "allowlist": {
-      "all": true,
       "http": {
         "scope": [
           "http://**",
@@ -23,8 +22,16 @@
         ]
       },
       "shell": {
-        "all": false,
-        "open": true
+        "all": true
+      },
+      "window": {
+        "all": true
+      },
+      "process": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
       }
     },
     "updater": {
@@ -57,7 +64,7 @@
       "active": true,
       "targets": "all",
       "category": "Utility",
-      "publisher": "yocat",
+      "publisher": "qwex888",
       "identifier": "com.interpreter.dev",
       "icon": [
         "icons/32x32.png",
@@ -65,7 +72,17 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "deb": {
+        "depends": ["openssl"]
+      },
+      "macOS": {
+        "frameworks": [],
+        "minimumSystemVersion": "",
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "entitlements": null
+      }
     }
   }
 }

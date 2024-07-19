@@ -1,7 +1,11 @@
 {
   "name": "interpreter",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.0",
+  "author": {
+    "name": "qwex888",
+    "email": "qwex333@126.com"
+  },
   "type": "module",
   "description": "Your quick translation assistant",
   "scripts": {

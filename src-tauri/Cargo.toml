@@ -2,8 +2,10 @@
 name = "interpreter"
 version = "0.0.0"
 description = "Your quick translation assistant"
-authors = ["you"]
+authors = ["qwex888"]
+repository = "https://github.com/qwex888/tauri-interpreter.git"
 edition = "2021"
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "updater", "system-tray", "api-all"] }
+tauri = { version = "1.2.4", features = ["global-shortcut-all", "process-all", "shell-all", "system-tray", "updater", "window-all"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
