@@ -6,6 +6,9 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
   workflow_dispatch:
+env:
+  TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+  TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
 jobs:
   release:
@@ -15,14 +18,23 @@ jobs:
       fail-fast: false
       matrix:
         # 选择编译平台
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
-    runs-on: ${{ matrix.platform }}
+        # platform: [macos-latest, ubuntu-20.04, windows-latest]
+        settings:
+          - platform: "macos-latest"
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest"
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "windows-latest"
+            args: ""
+    runs-on: ${{ matrix.settings.platform }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
+        if: matrix.settings.platform == 'ubuntu-20.04'
         # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
         run: |
           sudo apt-get update
@@ -30,6 +42,8 @@ jobs:
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -64,16 +78,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install app dependencies and build it (macos only)
-        if: matrix.platform == 'macos'
-        run: pnpm i && pnpm build --target universal-apple-darwin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-
       - name: Install app dependencies and build it
-        if: matrix.platform != 'macos'
         run: pnpm i && pnpm build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -93,6 +98,7 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
+          args: ${{matrix.settings.target}}
 
       # - name: Upload assets
       #   env:
