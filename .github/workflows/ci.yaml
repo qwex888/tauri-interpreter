@@ -39,7 +39,8 @@ jobs:
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          toolchain: stable
+          targets: ${{ matrix.settings.args }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -89,4 +90,4 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
-          args: ${{matrix.settings.target}}
+          args: ${{matrix.settings.args}}
