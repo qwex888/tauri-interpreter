@@ -1,7 +1,7 @@
 {
   "name": "interpreter",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.0",
   "author": {
     "name": "qwex888",
     "email": "qwex333@126.com"
@@ -33,7 +33,7 @@
     "@actions/github": "^6.0.0",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@tauri-apps/cli": "^1",
+    "@tauri-apps/cli": "^1.6.0",
     "@types/node": "^20.11.30",
     "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.19",

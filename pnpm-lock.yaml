@@ -46,7 +46,7 @@ importers:
         specifier: ^19.2.2
         version: 19.2.2
       '@tauri-apps/cli':
-        specifier: ^1
+        specifier: ^1.6.0
         version: 1.6.0
       '@types/node':
         specifier: ^20.11.30
