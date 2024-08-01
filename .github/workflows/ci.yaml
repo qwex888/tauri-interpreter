@@ -37,14 +37,15 @@ jobs:
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm' # Set this to npm, yarn or pnpm.
+          node-version: 20
+          # cache: 'pnpm' # Set this to npm, yarn or pnpm.
+
       # 使用 pnpm 作为包管理器
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
