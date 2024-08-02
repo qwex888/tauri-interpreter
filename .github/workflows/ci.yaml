@@ -15,12 +15,16 @@ jobs:
         # platform: [macos-latest, ubuntu-20.04, windows-latest]
         settings:
           - platform: "macos-latest"
+            alias: "macos_aarch64"
             args: "--target aarch64-apple-darwin"
           - platform: "macos-latest"
+            alias: "macos_x86_64"
             args: "--target x86_64-apple-darwin"
           - platform: "ubuntu-20.04"
+            alias: ""
             args: ""
           - platform: "windows-latest"
+            alias: ""
             args: ""
     # runs-on: ${{ matrix.platform }}
     runs-on: ${{ matrix.settings.platform }}
@@ -41,6 +45,11 @@ jobs:
         with:
           toolchain: stable
           args: ${{ matrix.settings.args }}
+
+      - name: Install Rustup x86_64
+        if: ${{ matrix.settings.alias == 'macos_x86_64' }}
+        run: |
+          rustup target add x86_64-apple-darwin
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
