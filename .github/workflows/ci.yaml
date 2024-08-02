@@ -21,12 +21,16 @@ jobs:
         # platform: [macos-latest, ubuntu-20.04, windows-latest]
         settings:
           - platform: "macos-latest"
+            alias: "macos-aarch64"
             args: "--target aarch64-apple-darwin"
           - platform: "macos-latest"
+            alias: "macos-x86_64"
             args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04"
+          - platform: "ubuntu-20.04"
+            alias: ""
             args: ""
           - platform: "windows-latest"
+            alias: ""
             args: ""
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -47,7 +51,13 @@ jobs:
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          toolchain: stable
+          args: ${{ matrix.settings.args }}
+
+      - name: Install rustup macos x86_64
+        if: ${{ matrix.settings.alias == 'macos-x86_64' }}
+        run: |
+          rustup target add x86_64-apple-darwin
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -102,7 +112,7 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
-          args: ${{matrix.settings.target}}
+          args: ${{matrix.settings.args}}
 
       # - name: Upload assets
       #   env:

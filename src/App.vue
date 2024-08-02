@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import useClipboard from "vue-clipboard3";
 import { darkTheme, createDiscreteApi } from "naive-ui";
 import { storeToRefs } from "pinia";
+import { listen, UnlistenFn } from '@tauri-apps/api/event';
 
 import gemini from "@/apis/gemini";
 import baidu from "@/apis/baidu";
@@ -21,15 +22,23 @@ const appStore = useAppStore();
 const { theme, modelType, showSetting, shortcutUpdating } = storeToRefs(appStore);
 const question = ref("");
 const answer = ref("");
-
-onMounted(() => {
+const greetInput = ref();
+let unListen: UnlistenFn | null = null
+onMounted(async () => {
   appStore.initTheme();
   appStore.initGlobalShortcut();
   // 添加键盘事件监听
   document.addEventListener('keydown', handleKeydown)
+   // 監聽窗口顯示事件
+  unListen = await listen('tauri://focus', () => {
+    showSetting.value = false;
+    shortcutUpdating.value = false;
+    if (greetInput.value) greetInput.value?.focus();
+  })
 });
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', handleKeydown)
+    if (unListen) unListen();
   })
 
 const handleKeydown = (event: any) => {
@@ -48,6 +57,16 @@ const apiChange = (e: any) => {
 };
 
 const isLoading = ref(false);
+
+const lineBreak = (event: { target: any; }) => {
+  const textarea = event.target; //获取输入框元素
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+  const value = textarea.value;
+  const newValue = value.substring(0, startPos) + "\n" + value.substring(endPos);
+  textarea.value = newValue;
+  textarea.selectionStart = textarea.selectionEnd = startPos + 1;
+}
 
 const onConfirm = async () => {
   if (!question.value) return;
@@ -138,9 +157,13 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
           >
             <textarea
               id="greet-input"
+              ref="greetInput"
               :class="`${blockStyle} caret-blue-500 h-full border-hidden align-top w-full p-2 overflow-auto resize-none focus:outline-none focus:ring focus:border-blue-500`"
               rows="5"
               v-model="question"
+              @keydown.shift.enter.prevent
+              @keydown.enter.exact.prevent="onConfirm"
+              @keyup.ctrl.enter.prevent="lineBreak"
             />
           </div>
 
