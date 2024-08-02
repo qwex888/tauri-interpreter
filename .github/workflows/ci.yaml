@@ -15,9 +15,9 @@ jobs:
         # platform: [macos-latest, ubuntu-20.04, windows-latest]
         settings:
           - platform: "macos-latest"
-            args: "aarch64-apple-darwin"
+            args: "--target aarch64-apple-darwin"
           - platform: "macos-latest"
-            args: "x86_64-apple-darwin"
+            args: "--target x86_64-apple-darwin"
           - platform: "ubuntu-20.04"
             args: ""
           - platform: "windows-latest"
@@ -40,7 +40,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          targets: ${{ matrix.settings.args }}
+          args: ${{ matrix.settings.args }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
