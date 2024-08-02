@@ -14,18 +14,18 @@ jobs:
       matrix:
         # platform: [macos-latest, ubuntu-20.04, windows-latest]
         settings:
-          - platform: "macos-latest"
-            alias: "macos_aarch64"
-            args: "--target aarch64-apple-darwin"
+          # - platform: "macos-latest"
+          #   alias: "macos_aarch64"
+          #   args: "--target aarch64-apple-darwin"
           - platform: "macos-latest"
             alias: "macos_x86_64"
             args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-20.04"
-            alias: ""
-            args: ""
-          - platform: "windows-latest"
-            alias: ""
-            args: ""
+          # - platform: "ubuntu-20.04"
+          #   alias: ""
+          #   args: ""
+          # - platform: "windows-latest"
+          #   alias: ""
+          #   args: ""
     # runs-on: ${{ matrix.platform }}
     runs-on: ${{ matrix.settings.platform }}
 
