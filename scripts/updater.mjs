@@ -29,11 +29,19 @@ async function resolveUpdater() {
     ...options,
     tag: tag.name
   });
+  // 获取日志更新内容
+  const notes = await resolveChangeLog(tag.name)
+  // 更新发布tag release 内容
+  github.rest.repos.updateRelease({
+    ...options,
+    release_id: latestRelease.id,
+    body: notes
+  });
 
   // 根据需要选择需更新的平台，应与编译脚本平台选择对应
   const updateData = {
     version: tag.name,
-    notes: await resolveChangeLog(tag.name),
+    notes,
     pub_date: new Date().toISOString(),
     platforms: {
       win64: { signature: "", url: "" }, // compatible with older formats
@@ -153,6 +161,8 @@ async function resolveUpdater() {
     data: JSON.stringify(updateDataNew, null, 2),
   });
 }
+
+
 
 async function getSignature(url) {
   const response = await fetch(url, {
