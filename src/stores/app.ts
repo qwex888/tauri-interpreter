@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
 import { invoke } from "@tauri-apps/api/tauri";
-import { check } from "@tauri-apps/plugin-updater";
-// import { relaunch } from "@tauri-apps/plugin-process";
+import { checkUpdate, installUpdate, onUpdaterEvent } from '@tauri-apps/api/updater';
+import { relaunch } from "@tauri-apps/plugin-process";
 import {
   BAIDU_OPTION,
   GEMINI_OPTION,
@@ -29,7 +29,8 @@ export const useAppStore = defineStore("app", {
       modelType: "baidu",
       showSetting: false,
       updater: false,
-      shortcutUpdating: false
+      shortcutUpdating: false,
+      hasUpdate: false
     };
   },
   getters: {
@@ -137,25 +138,28 @@ export const useAppStore = defineStore("app", {
         });
       }
     },
-    async checkUpdate() {
-      const update = await check();
-      this.updater = !!update?.available
-      // if (update?.available) {
-      //   await update.downloadAndInstall();
-      //   await relaunch();
-      // }
-
-      // await updater.downloadAndInstall((p) => {
-      //   if (p.event === "Progress") {
-      //     setProgress(p.data.chunkLength);
-      //   }
-      // });
-
-      // setUpdating(false);
-      // const res = await ask(t`更新下载完成，是否立即重启应用？`, {
-      //   title: t`提示`,
-      //   kind: "info",
-      // });
+    async checkAppUpdate() {
+      try {
+        const { shouldUpdate } = await checkUpdate();
+        console.log('检查更新结果：', shouldUpdate);
+        this.hasUpdate = shouldUpdate;
+        return shouldUpdate;
+      } catch (error) {
+        this.hasUpdate = false;
+        console.log('检查更新失败：', error);
+        return error;
+      }
+    },
+    async updateVersion() {
+      try {
+        await installUpdate();
+        onUpdaterEvent(({ error, status }) => {
+          // 'PENDING' | 'ERROR' | 'DONE' | 'UPTODATE'
+          console.log('Updater event', error, status);
+         });
+      } catch (error) {
+        console.log('更新失败：', error);
+      }
     }
   },
   persist: {

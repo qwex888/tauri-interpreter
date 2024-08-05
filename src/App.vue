@@ -27,11 +27,12 @@ let unListen: UnlistenFn | null = null
 onMounted(async () => {
   appStore.initTheme();
   appStore.initGlobalShortcut();
+  appStore.checkAppUpdate();
   // 添加键盘事件监听
   document.addEventListener('keydown', handleKeydown)
    // 監聽窗口顯示事件
   unListen = await listen('tauri://focus', () => {
-    showSetting.value = false;
+    // showSetting.value = false;
     shortcutUpdating.value = false;
     if (greetInput.value) greetInput.value?.focus();
   })
@@ -72,7 +73,7 @@ const onConfirm = async () => {
   if (!question.value) return;
   // 检查该模型的key是否存在
   const flag = appStore.checkApi();
-  if (!flag) return;
+  if (!flag) return message.error('请先设置API Key');
   isLoading.value = true;
   try {
     const requestFn =
@@ -116,6 +117,7 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
 
 <template>
   <n-config-provider :theme="theme === 'dark' ? darkTheme : undefined">
+    <n-dialog-provider>
     <div
       class="container m-0 relative mx-auto min-w-96 font-sans h-screen bg-slate-200 dark:bg-cyan-900 text-black dark:text-slate-200 rounded py-4 px-4"
     >
@@ -172,7 +174,7 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
             :disabled="isLoading"
             class="hover:bg-sky-700 my-4 mx-auto block px-3 py-2 rounded-md select-none font-semibold text-sm bg-sky-500 text-white shadow-sm"
           >
-            send
+            发送
           </button>
         </form>
       </div>
@@ -186,12 +188,13 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
             @click="toCopy"
           />
         </div>
-        <div :class="`min-h-40 output-block overflow-hidden overflow-y-scroll`">
+        <div :class="`min-h-40 output-block overflow-hidden overflow-y-scroll beauty-scroll-primary`">
           <span>{{ answer }}</span>
         </div>
       </div>
     </div>
     <Setting />
+    </n-dialog-provider>
   </n-config-provider>
 </template>
 

@@ -6,15 +6,15 @@ use tauri::{Manager, Window, Wry, SystemTray, SystemTrayEvent, SystemTrayMenu, S
 #[tauri::command]
 fn shortcut(window: Window) -> String {
     let window = window.get_window("main").unwrap();
-    // if window.is_visible().unwrap() {
-      // window.hide().unwrap();
-      // "hide".into()
-    // }
-    //  else {
+    if window.is_visible().unwrap() {
+      window.hide().unwrap();
+      "hide".into()
+    }
+     else {
       window.show().unwrap();
       window.set_focus().unwrap();
       "show".into()
-    // }
+    }
 }
 // 创建系统托盘
 pub fn create_system_tray() -> SystemTray {
