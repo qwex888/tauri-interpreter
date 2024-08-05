@@ -52,6 +52,7 @@ export default defineConfig(async () => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "@root": path.resolve("."),
     },
   },
   // to access the Tauri environment variables set by the CLI with information about the current target
