@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
+import { createDiscreteApi } from 'naive-ui';
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut';
 import { invoke } from "@tauri-apps/api/tauri";
 import { checkUpdate, installUpdate, onUpdaterEvent } from '@tauri-apps/api/updater';
-import { relaunch } from "@tauri-apps/plugin-process";
+import { type as platformType } from '@tauri-apps/api/os';
+import { relaunch } from '@tauri-apps/api/process'
 import {
   BAIDU_OPTION,
   GEMINI_OPTION,
@@ -30,7 +32,14 @@ export const useAppStore = defineStore("app", {
       showSetting: false,
       updater: false,
       shortcutUpdating: false,
-      hasUpdate: false
+      hasUpdate: false,
+      globalDialogOption: {
+        title: "提示",
+        content: "",
+        show: false,
+        positiveText: "确定",
+        negativeText: "取消",
+      }
     };
   },
   getters: {
@@ -151,15 +160,36 @@ export const useAppStore = defineStore("app", {
       }
     },
     async updateVersion() {
+      const { message } = createDiscreteApi(['message']);
+      message.info('开始下载更新...');
       try {
-        await installUpdate();
-        onUpdaterEvent(({ error, status }) => {
+        onUpdaterEvent(async ({ error, status }) => {
           // 'PENDING' | 'ERROR' | 'DONE' | 'UPTODATE'
           console.log('Updater event', error, status);
-         });
+          if (status === 'DONE') {
+            this.hasUpdate = false;
+            const platformName = await platformType();
+            if (platformName !== 'Windows_NT') {
+              this.setGlobalDialogOption({
+                title: '更新提示',
+                content: '更新完成，是否重启应用？',
+                onPositiveClick: () => {
+                  relaunch();
+                }
+              })
+            }
+          }
+        });
+        await installUpdate();
       } catch (error) {
         console.log('更新失败：', error);
       }
+    },
+    setGlobalDialogOption(option: any) {
+      this.globalDialogOption = {...this.globalDialogOption, ...option, show: true};
+    },
+    hideGlobalDialog() {
+      this.globalDialogOption.show = false;
     }
   },
   persist: {

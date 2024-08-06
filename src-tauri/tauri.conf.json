@@ -22,6 +22,9 @@
           "https://**"
         ]
       },
+      "app": {
+        "all": true
+      },
       "shell": {
         "all": true
       },
@@ -34,7 +37,7 @@
       "globalShortcut": {
         "all": true
       },
-      "dialog": {
+      "os": {
         "all": true
       }
     },

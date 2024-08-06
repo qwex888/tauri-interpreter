@@ -12,6 +12,7 @@ import openai from "@/apis/openai";
 import { MoonIcon, SunIcon, Cog6ToothIcon } from "@heroicons/vue/24/solid";
 import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 import Setting from "@/components/Setting.vue";
+import CustomDialog from "@/components/CustomDialog.vue";
 
 import { API_OPTIONS, GEMINI_OPTION, OPENAI_OPTION } from "@/constants/index";
 import { useAppStore } from "@/stores/app";
@@ -27,7 +28,6 @@ let unListen: UnlistenFn | null = null
 onMounted(async () => {
   appStore.initTheme();
   appStore.initGlobalShortcut();
-  appStore.checkAppUpdate();
   // 添加键盘事件监听
   document.addEventListener('keydown', handleKeydown)
    // 監聽窗口顯示事件
@@ -36,6 +36,18 @@ onMounted(async () => {
     shortcutUpdating.value = false;
     if (greetInput.value) greetInput.value?.focus();
   })
+  const hasUpdate = await appStore.checkAppUpdate();
+  if (hasUpdate) {
+    appStore.setGlobalDialogOption({
+        title: '更新提示',
+        content: '发现新版本,是否安装更新？',
+        positiveText: '确定',
+        negativeText: '取消',
+        onPositiveClick: () => {
+          appStore.updateVersion();
+        }
+    })
+  }
 });
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', handleKeydown)
@@ -117,7 +129,6 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
 
 <template>
   <n-config-provider :theme="theme === 'dark' ? darkTheme : undefined">
-    <n-dialog-provider>
     <div
       class="container m-0 relative mx-auto min-w-96 font-sans h-screen bg-slate-200 dark:bg-cyan-900 text-black dark:text-slate-200 rounded py-4 px-4"
     >
@@ -149,7 +160,9 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
           </div>
         </div>
         <div class="right">
-          <Cog6ToothIcon :class="iconStyle" @click="openSetting" />
+          <n-badge :dot="appStore.hasUpdate">
+            <Cog6ToothIcon :class="iconStyle" @click="openSetting" />
+          </n-badge>
         </div>
       </div>
       <div class="input-content flex flex-col justify-center">
@@ -194,7 +207,7 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
       </div>
     </div>
     <Setting />
-    </n-dialog-provider>
+    <CustomDialog :options="appStore.globalDialogOption" />
   </n-config-provider>
 </template>
 

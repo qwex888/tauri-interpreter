@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { InputInst } from 'naive-ui';
-import { createDiscreteApi, useDialog } from 'naive-ui';
+import { createDiscreteApi } from 'naive-ui';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from '@/stores/app';
 import { unregister } from '@tauri-apps/api/globalShortcut';
 import { version } from '@root/package.json';
+import { getVersion } from '@tauri-apps/api/app';
 
+const appVersion = ref(version);
 const { message } = createDiscreteApi(['message']);
-const dialog = useDialog();
 const appStore = useAppStore();
 const { showSetting, appSetting } = storeToRefs(appStore);
 const shortcutRef = ref<InputInst | null>(null);
@@ -37,7 +38,7 @@ const checkVersion = async () => {
     if (!hasNewVersion) {
       message.success('当前已是最新版本');
     } else {
-      dialog.success({
+      appStore.setGlobalDialogOption({
         title: '更新提示',
         content: '发现新版本,是否安装更新？',
         positiveText: '确定',
@@ -45,7 +46,7 @@ const checkVersion = async () => {
         onPositiveClick: () => {
           appStore.updateVersion();
         }
-      });
+      })
     }
   } catch (error) {
     message.error('检查更新失败');
@@ -53,6 +54,9 @@ const checkVersion = async () => {
     getUpdateLoading.value = false;
   }
 };
+onMounted(async () => {
+  appVersion.value = await getVersion();
+});
 </script>
 <template>
   <n-modal v-model:show="showSetting" preset="card" title="设置" style="height: 100vh">
@@ -139,10 +143,10 @@ const checkVersion = async () => {
             </n-collapse-transition>
           </n-card>
           <n-card title="检查更新">
-            <n-form-item label="当前版本">
-              <n-space justify="space-between" align="center">
+            <n-form-item label="当前版本" size="large">
+              <n-flex justify="space-between" align="center">
                 <n-badge :dot="appStore.hasUpdate">
-                  <span>{{ version }}</span>
+                  <p>{{ appVersion }}</p>
                 </n-badge>
                 <div class="w-24 text-right">
                   <n-button v-if="appStore.hasUpdate" text type="primary" @click="appStore.updateVersion">
@@ -150,7 +154,7 @@ const checkVersion = async () => {
                   </n-button>
                   <n-button v-else :loading="getUpdateLoading" text type="primary" @click="checkVersion"> 检查更新 </n-button>
                 </div>
-              </n-space>
+              </n-flex>
             </n-form-item>
           </n-card>
         </n-space>
