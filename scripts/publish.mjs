@@ -27,7 +27,7 @@ async function resolvePublish() {
   packageJson.version = nextVersion;
   tauriJson.package.version = nextVersion;
 
-  // 发布更新前先写更新日志
+  // 发布更新前需要先写更新日志
   const nextTag = `v${nextVersion}`;
   await resolveChangeLog(nextTag);
 
@@ -42,6 +42,7 @@ async function resolvePublish() {
 
   execSync("git add ./package.json");
   execSync("git add ./src-tauri/tauri.conf.json");
+  execSync("git add ./CHANGELOG.md");
   execSync(`git commit -m "release: v${nextVersion}"`);
   execSync(`git tag -a v${nextVersion} -m "v${nextVersion}"`);
   execSync(`git push`);
