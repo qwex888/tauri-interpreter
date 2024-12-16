@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "interpreter",
-    "version": "0.1.3"
+    "version": "0.1.4"
   },
   "tauri": {
     "systemTray": {
@@ -70,7 +70,9 @@
         {
           "identifier": "my-capability",
           "description": "My application capability used for all windows",
-          "windows": ["*"],
+          "windows": [
+            "*"
+          ],
           "permissions": [
             "fs:default",
             "allow-home-read-extended",
