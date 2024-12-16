@@ -29,7 +29,7 @@ async function resolvePublish() {
 
   // 发布更新前需要先写更新日志
   const nextTag = `v${nextVersion}`;
-  await resolveChangeLog(nextTag);
+  await resolveChangeLog(nextTag.slice(1));
 
   await fs.writeFile(
     "./package.json",
