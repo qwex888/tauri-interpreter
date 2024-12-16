@@ -1,4 +1,5 @@
 module.exports = {
+  config: 'conventional-changelog-gitmoji-config',
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [2, 'always', [

@@ -7,7 +7,7 @@ const CHANGE_LOG = "CHANGELOG.md";
 export async function resolveChangeLog(tag) {
   const cwd = process.cwd();
 
-  const reTitle = /^## v[\d\.]+/;
+  const reTitle = /^## \[[\d\.]+\]/;
   const reEnd = /^---/;
 
   const file = path.join(cwd, CHANGE_LOG);
@@ -23,7 +23,9 @@ export async function resolveChangeLog(tag) {
 
   data.split("\n").forEach((line) => {
     if (reTitle.test(line)) {
-      p = line.slice(3).trim();
+      const startbrackets = line.indexOf("[");
+      const endbrackets = line.indexOf("]");
+      p = line.slice(startbrackets + 1, endbrackets);
       if (!map[p]) {
         map[p] = [];
       } else {
