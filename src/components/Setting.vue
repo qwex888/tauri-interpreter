@@ -7,6 +7,8 @@ import { useAppStore } from '@/stores/app';
 import { unregister } from '@tauri-apps/api/globalShortcut';
 import { version } from '@root/package.json';
 import { getVersion } from '@tauri-apps/api/app';
+import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
+
 
 const appVersion = ref(version);
 const { message } = createDiscreteApi(['message']);
@@ -54,8 +56,18 @@ const checkVersion = async () => {
     getUpdateLoading.value = false;
   }
 };
+const controlStartUp = async (value: boolean) => {
+  if (value) {
+    await enable();
+  } else {
+    await disable();
+  }
+};
 onMounted(async () => {
   appVersion.value = await getVersion();
+  if (await isEnabled()) {
+    appSetting.value.isStartUp = true;
+  }
 });
 </script>
 <template>
@@ -63,6 +75,11 @@ onMounted(async () => {
     <div class="setting beauty-scroll-primary">
       <n-form label-placement="left" size="small" ref="formRef">
         <n-space vertical>
+          <n-card title="基本">
+            <n-form-item label="开机自动启动">
+              <n-switch v-model:value="appSetting.isStartUp" @update:value="controlStartUp" />
+            </n-form-item>
+          </n-card>
           <n-card title="快捷键设置">
             <n-form-item label="全局显示/隐藏窗口">
               <n-input

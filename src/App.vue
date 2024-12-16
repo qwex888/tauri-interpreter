@@ -201,7 +201,7 @@ const blockStyle = `dark:text-slate-400 dark:bg-cyan-950 bg-white`;
             @click="toCopy"
           />
         </div>
-        <div :class="`min-h-40 output-block overflow-hidden overflow-y-scroll beauty-scroll-primary`">
+        <div :class="`min-h-40 p-2 output-block overflow-hidden overflow-y-scroll beauty-scroll-primary`">
           <span>{{ answer }}</span>
         </div>
       </div>

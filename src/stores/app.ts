@@ -25,7 +25,8 @@ export const useAppStore = defineStore("app", {
         geminiKey: "",
         isUseCustomOpenAiApi: false,
         openAiKey: "",
-        globalShowWindow: 'alt+shift+f'
+        globalShowWindow: 'alt+shift+f',
+        isStartUp: false
       },
       theme: "",
       modelType: "baidu",

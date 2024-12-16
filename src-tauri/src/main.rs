@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use tauri::{Manager, Window, Wry, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, CustomMenuItem, AppHandle};
+use tauri_plugin_autostart::MacosLauncher;
 // #[warn(unused_attributes)]
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -85,8 +86,9 @@ pub fn change_system_tray_lang(lang: &str, app_handle: tauri::AppHandle) -> bool
 fn main() {
     tauri::Builder::default()
         .system_tray(create_system_tray())
-    	.on_system_tray_event(handle_system_tray_event)
+    	  .on_system_tray_event(handle_system_tray_event)
         .invoke_handler(tauri::generate_handler![shortcut])
+        .plugin(tauri_plugin_autostart::init(MacosLauncher::LaunchAgent, Some(vec!["--flag1", "--flag2"]) /* arbitrary number of args to pass to your app */))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

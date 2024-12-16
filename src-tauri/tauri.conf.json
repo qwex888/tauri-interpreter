@@ -65,7 +65,22 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "my-capability",
+          "description": "My application capability used for all windows",
+          "windows": ["*"],
+          "permissions": [
+            "fs:default",
+            "allow-home-read-extended",
+            "autostart:allow-enable",
+            "autostart:allow-disable",
+            "autostart:allow-is-enabled"
+          ]
+        },
+        "my-second-capability"
+      ]
     },
     "bundle": {
       "active": true,
