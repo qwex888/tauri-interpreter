@@ -30,7 +30,7 @@ async function resolveUpdater() {
     tag: tag.name
   });
   // 获取日志更新内容
-  const notes = await resolveChangeLog(tag.name)
+  const notes = await resolveChangeLog(tag.name.slice(1));
   // 更新发布tag release 内容
   github.rest.repos.updateRelease({
     ...options,
